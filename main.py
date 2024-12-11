@@ -5,13 +5,24 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from passlib.context import CryptContext
+from decouple import config
 
 app = FastAPI()
 
 # Database configuration
-DATABASE_URL = "postgresql://postgres:anand18271827@localhost/user_db"
+DATABASE_URL = config("DATABASE_URL", default="postgresql://postgres:anand18271827@localhost/user_db")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Password hashing configuration
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
 # Database setup
 Base = declarative_base()
@@ -49,10 +60,12 @@ async def login_page(request: Request):
 # Register endpoint
 @app.post("/register/")
 async def register_user(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    if len(username) < 3 or len(password) < 6:
+        raise HTTPException(status_code=400, detail="Username must be at least 3 characters and password at least 6 characters.")
     user = db.query(User).filter(User.username == username).first()
     if user:
         raise HTTPException(status_code=400, detail="Username already registered")
-    new_user = User(username=username, password=password)
+    new_user = User(username=username, password=hash_password(password))
     db.add(new_user)
     db.commit()
     return {"message": "User registered successfully"}
@@ -60,8 +73,8 @@ async def register_user(username: str = Form(...), password: str = Form(...), db
 # Login endpoint
 @app.post("/login/")
 async def login_user(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == username, User.password == password).first()
-    if not user:
+    user = db.query(User).filter(User.username == username).first()
+    if not user or not verify_password(password, user.password):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     return {"message": "Login successful"}
 
