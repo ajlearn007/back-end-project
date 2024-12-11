@@ -82,3 +82,5 @@ async def login_user(username: str = Form(...), password: str = Form(...), db: S
 async def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
+
+
