@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, Form, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import create_engine, Column, Integer, String
@@ -47,6 +47,11 @@ def get_db():
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# Redirect root route to the signup page
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/signup")
+
 # Serve signup page
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
@@ -82,5 +87,3 @@ async def login_user(username: str = Form(...), password: str = Form(...), db: S
 async def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
-
-

@@ -9,12 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const password = document.getElementById("password").value;
 
             try {
+                // Use URLSearchParams to encode form data
                 const response = await fetch("/register/", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/x-www-form-urlencoded",
                     },
-                    body: JSON.stringify({ username, password }),
+                    body: new URLSearchParams({ username, password }),
                 });
 
                 const data = await response.json();
@@ -34,10 +35,3 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 });
-
-/**
- * Redirect to the login page.
- */
-function redirectToLogin() {
-    window.location.href = "/login"; // Adjust the URL if necessary
-}
