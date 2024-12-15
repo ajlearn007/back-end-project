@@ -1,7 +1,7 @@
 /* Add your styles here */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f9f9f9; /* Soft light gray */
     margin: 0;
     padding: 0;
 }
@@ -10,34 +10,46 @@ body {
     max-width: 600px;
     margin: 50px auto;
     padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff; /* Pure white */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
 }
 
 h1, h2 {
     text-align: center;
+    color: #333333; /* Dark gray for better contrast */
 }
 
 input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc; /* Light gray border */
+    background-color: #f7f7f7; /* Soft white-gray */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #87ceeb; /* Light blue border when focused */
+    box-shadow: 0 0 8px rgba(135, 206, 235, 0.5); /* Soft blue glow */
 }
 
 button {
     width: 100%;
     padding: 10px;
-    border-radius: 4px;
-    background-color: #4CAF50;
+    border-radius: 6px;
+    background-color: #87ceeb; /* Light sky blue */
     color: white;
     border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #6fb8d6; /* Slightly darker blue on hover */
 }
 
 .form-actions {
@@ -46,9 +58,10 @@ button:hover {
 }
 
 .error {
-    color: red;
+    color: #ff6b6b; /* Soft red for errors */
 }
 
 .success {
-    color: green;
+    color: #55c1ff; /* Pleasant green for success */
+    font-weight: bold;
 }
