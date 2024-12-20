@@ -11,7 +11,7 @@ from decouple import config
 app = FastAPI()
 
 # Database configuration
-DATABASE_URL = config("DATABASE_URL", default="postgresql://postgres:anand18271827@localhost/user_db")
+DATABASE_URL = config("DATABASE_URL", default="postgresql://postgres:<Password>@localhost/user_db")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
