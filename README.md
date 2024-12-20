@@ -26,8 +26,8 @@ A simple user authentication system built with **FastAPI** that includes sign-up
 
 1. **Clone the Repository**:
    ```bash
-   git clone <repository_url>
-   cd <repository_name>
+   git clone user_registration_fastapi
+   cd user_registration_fastapi
    ```
 
 2. **Install Dependencies**:
@@ -100,4 +100,3 @@ A simple user authentication system built with **FastAPI** that includes sign-up
 This project is licensed under the MIT License. Feel free to use, modify, and distribute.
 
 ---
-*Happy Coding!* 🚀
