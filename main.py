@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Form, Request, status
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import RedirectResponse
@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from decouple import config
+from pydantic import BaseModel
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -92,33 +93,47 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 async def root():
     return RedirectResponse(url="http://localhost:3000")
 
+# Pydantic Models for Request & Response
+class UserCreate(BaseModel):
+    username: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+
+    class Config:
+        from_attributes = True
+
 # Register a new user
-@app.post("/register/")
-async def register_user(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    if len(username) < 3 or len(password) < 6:
+@app.post("/register/", response_model=UserResponse)
+async def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    if len(user.username) < 3 or len(user.password) < 6:
         raise HTTPException(status_code=400, detail="Username must be at least 3 characters and password at least 6 characters.")
     
-    existing_user = db.query(User).filter(User.username == username).first()
+    existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already taken")
 
-    new_user = User(username=username, password=hash_password(password))
+    new_user = User(username=user.username, password=hash_password(user.password))
     db.add(new_user)
     db.commit()
-    return {"message": "User registered successfully"}
+    db.refresh(new_user)
+    
+    return new_user
 
 # Login and get access token
 @app.post("/login/")
-async def login_user(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == username).first()
-    if not user or not verify_password(password, user.password):
+async def login_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if not db_user or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(data={"sub": db_user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Get all users (Protected Route)
-@app.get("/users/")
+@app.get("/users/", response_model=list[UserResponse])
 async def get_users(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
