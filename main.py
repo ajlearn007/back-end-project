@@ -16,7 +16,7 @@ app = FastAPI()
 # CORS Configuration (Allow frontend connection)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Change this to your frontend URL in production
+    allow_origins=["http://localhost:3000"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -137,3 +137,12 @@ async def login_user(user: UserCreate, db: Session = Depends(get_db)):
 async def get_users(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
+
+@app.delete("/users/{username}/")
+async def delete_user(username: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return {"message": "User deleted successfully"}
