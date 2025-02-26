@@ -9,6 +9,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from decouple import config
 from pydantic import BaseModel
+import requests
+import os
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -16,7 +18,7 @@ app = FastAPI()
 # CORS Configuration (Allow frontend connection)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  
+    allow_origins=["http://localhost:3000", "*"],  # Allow frontend and external sources
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -138,6 +140,7 @@ async def get_users(current_user: User = Depends(get_current_user), db: Session 
     users = db.query(User).all()
     return users
 
+# Delete user
 @app.delete("/users/{username}/")
 async def delete_user(username: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
@@ -146,3 +149,41 @@ async def delete_user(username: str, db: Session = Depends(get_db)):
     db.delete(user)
     db.commit()
     return {"message": "User deleted successfully"}
+
+# ---------------------------
+# NEW FEATURE: AI Chatbox (Flan-T5)
+# ---------------------------
+
+# Hugging Face API Key (Set this in your environment variables)
+HF_API_KEY = os.getenv("HF_API_KEY")  
+
+# Hugging Face model
+MODEL = "google/flan-t5-large"
+
+# Request payload structure
+class ChatRequest(BaseModel):
+    prompt: str
+
+@app.post("/chat/")
+async def chat(request: ChatRequest, current_user: User = Depends(get_current_user)):
+    """Handles AI chatbot queries using Hugging Face's Flan-T5 model."""
+    
+    headers = {"Authorization": f"Bearer {HF_API_KEY}"}
+    payload = {
+        "inputs": request.prompt,
+        "parameters": {"max_length": 100}
+    }
+
+    response = requests.post(
+        f"https://api-inference.huggingface.co/models/{MODEL}", 
+        headers=headers, 
+        json=payload
+    )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Error fetching AI response")
+
+    result = response.json()
+    
+    return {"response": result[0]["generated_text"]} if result else {"response": "I couldn't generate a response."}
+
