@@ -25,8 +25,7 @@ A simple user authentication system built with **FastAPI** that includes sign-up
 
 1. **Clone the Repository**:
    ```bash
-   git clone user_registration_fastapi
-   cd user_registration_fastapi
+   git clone back-end-project
    ```
 
 2. **Install Dependencies**:
@@ -47,34 +46,6 @@ A simple user authentication system built with **FastAPI** that includes sign-up
    uvicorn main:app --reload
    ```
 
-5. **Access the Application**:
-   - Sign-up page: [http://127.0.0.1:8000/signup](http://127.0.0.1:8000/signup)
-   - Login page: [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login)
-
-## How to Use
-
-- **Sign Up**:
-  1. Go to the Sign-Up page.
-  2. Enter a username and password.
-  3. Click the "Sign Up" button.
-
-- **Login**:
-  1. Go to the Login page.
-  2. Enter your username and password.
-  3. Click the "Login" button.
-
-- **View Users** (Development Only):
-  Visit `/users/` endpoint to see all registered users.
-
-## Front-End Details
-
-- **signup.html** and **login.html**:
-  - HTML forms for user registration and login.
-- **styles.css**:
-  - A modern and responsive design for the forms and pages.
-- **scripts.js**:
-  - Handles form submissions using Fetch API.
-
 ## Security Considerations
 
 - Passwords are securely hashed using `bcrypt`.
@@ -87,16 +58,6 @@ A simple user authentication system built with **FastAPI** that includes sign-up
 
 ### Login Page
 ![Login](https://via.placeholder.com/800x400?text=Screenshot+of+Login+Page)
-
-## Future Enhancements
-
-- Add JWT-based authentication for tokenized sessions.
-- Implement email verification for new users.
-- Enhance the UI with more interactivity and responsiveness.
-
-## License
-
-This project is licensed under the MIT License. Feel free to use, modify, and distribute.
 
 ---
 
