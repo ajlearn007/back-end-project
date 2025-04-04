@@ -1,4 +1,3 @@
-
 # FastAPI User Authentication System
 
 A simple user authentication system built with **FastAPI** that includes sign-up, login, and user management features. This project demonstrates full-stack capabilities by integrating a **PostgreSQL database** for user storage, **HTML templates** for front-end views, and secure password handling using **bcrypt**.
@@ -69,11 +68,11 @@ A simple user authentication system built with **FastAPI** that includes sign-up
 
 ## Front-End Details
 
-- **signup.html** and **login.html**: 
+- **signup.html** and **login.html**:
   - HTML forms for user registration and login.
-- **styles.css**: 
+- **styles.css**:
   - A modern and responsive design for the forms and pages.
-- **scripts.js**: 
+- **scripts.js**:
   - Handles form submissions using Fetch API.
 
 ## Security Considerations
@@ -100,3 +99,4 @@ A simple user authentication system built with **FastAPI** that includes sign-up
 This project is licensed under the MIT License. Feel free to use, modify, and distribute.
 
 ---
+
