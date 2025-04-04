@@ -1,4 +1,4 @@
-# FastAPI User Authentication System
+# FastAPI Backend
 
 A simple user authentication system built with **FastAPI** that includes sign-up, login, and user management features. This project demonstrates full-stack capabilities by integrating a **PostgreSQL database** for user storage, **HTML templates** for front-end views, and secure password handling using **bcrypt**.
 
